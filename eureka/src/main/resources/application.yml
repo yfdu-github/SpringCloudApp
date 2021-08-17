@@ -13,7 +13,8 @@ eureka:
     #默认为30s 生产使用缺省时间，测试环境修改小点
     registry-fetch-interval-seconds: 15
     #心跳时间，生产使用缺省时间，即服务续约间隔时间（缺省为30秒，生产使用缺省时间，测试环境修改小点）
-    service-url: http://localhost:9230
+    service-url:
+      defaultZone: http://localhost:8081/eureka/
     registry-server-connect-timeout-seconds: 5
 
 spring:
@@ -22,15 +23,12 @@ spring:
   application:
     #应用名称，别名
     name: config-client
-  profiles:
-    active: @profiles.active@
   cloud:
     config:
       discovery:
         enabled: false
         service-id: config-server
       name: ${Spring.application.name}
-      profile: ${Spring.profiles.active}
       server:
         git:
           uri: D:\GitLog
