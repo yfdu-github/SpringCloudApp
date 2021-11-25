@@ -1,36 +1,69 @@
+
+spring:
+  application:
+    #应用名称，别名
+    name: config-eureka
+  jmx:
+    enabled: false
+  profiles:
+    active: dev
+
+# 默认端口
 server:
-  port: 9230
+  tomcat:
+    basedir: /tmp/tomcat/config-eureka
+  port: 2000
+
+# 注册中心实例信息 - 默认配置
 eureka:
   instance:
     hostname: localhost
-  client:
-    register-with-eureka: false
-    fetch-registry: true
-    #表示是否注册自身到eureka服务器， 做集群是设置成true 生产配置为true
-    registerWithEureka: false
-    #表示是否从eureka服务器获得注册信息，生产配置为true
-    fetchRegistry: false
-    #默认为30s 生产使用缺省时间，测试环境修改小点
-    registry-fetch-interval-seconds: 15
-    #心跳时间，生产使用缺省时间，即服务续约间隔时间（缺省为30秒，生产使用缺省时间，测试环境修改小点）
-    service-url:
-      defaultZone: http://localhost:8081/eureka/
-    registry-server-connect-timeout-seconds: 5
+    prefer-ip-address: true # 点击eureka界面上超链接会用ip方式打开
+    instance-id: ${spring.cloud.client.ip-address}:${server.port} # 注册中心上显示的名称
+    status-page-url-path: /actuator/info # 在注册中心点击跳转的地址
+    health-check-url-path: /actuator/heatlth # 健康检查地址
+    lease-renewal-interval-in-seconds: 15 # 该实例向注册中心发送心跳时间间隔
+    lease-expiration-duration-in-seconds: 15 # 指示注册中心未收到本实例心跳的间隔时间
 
-spring:
-  devtools:
-    enabled: true
-  application:
-    #应用名称，别名
-    name: config-client
-  cloud:
-    config:
-      discovery:
-        enabled: false
-        service-id: config-server
-      name: ${Spring.application.name}
-      server:
-        git:
-          uri: D:\GitLog
-          search-paths: D:\GitLog
-          default-label: develog
+  server:
+    enable-self-preservation: false # 自我保护机制,在90s内未收到服务心跳会注销服务实例
+    eviction-interval-timer-in-ms: 10000 # 扫描并清理无效服务时间间隔
+
+  client:
+    register-with-eureka: true # 是否将自己注册到注册中心上
+    fetch-registry: true # 是否从Eureka Server上获取注册信息
+    service-url: # 多个注册中心
+      defaultZone: 'http://${eureka.instance.hostname}:${server.port}/eureka'
+
+    registry-fetch-interval-seconds: 15 # 默认为30s 生产使用缺省时间，测试环境修改小点
+    registry-server-connect-timeout-seconds: 5 # 连接Eureka超时时间
+    eureka-server-connect-timeout-seconds: 5 # 读取Eureka配置超时时间
+    filter-only-up-instances: true # 是否过滤up状态的实例
+    eureka-connection-idle-timeout-seconds: 30 # 链接到eureka的空闲链接超时时间
+    eureka-server-total-connections: 200 # Eureka客户端连接到所有eureka服务器总数限制
+    eureka-server-total-connections-per-host: 50 # Eureka服务器连接到所有eureka客户端总数限制
+
+logging:
+  file:
+    path: /tmp/logs
+  config: classpath:logback-spring.xml
+  level:
+    org.springframework: warn
+    org.apache: warn
+    com.netflix: warn
+    org.hibernate: warn
+    io.netty: warn
+
+# 健康检查信息
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,env,metrics,heapdump,threaddump,beans
+
+# Eureka注册服务之后点击服务连接显示的信息
+info:
+  app.name: ${spring.application.name}
+  company.name: www.weekReporter.com
+  build.artifactId: "@project.actifactId@"
+  build.version: "@project.version@"

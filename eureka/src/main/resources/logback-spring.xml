@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="ture" scanPeriod="60 seconds" debug="false">
+    <springProperty scope="context" name="logPath" source="logging.file.path"/>
+    <springProperty scope="context" name="springAppName" source="spring.application.name"/>
+
+    <!-- 根据spring.profiles.active环境变量,测试环境和生产环境输出日志到文件 -->
+    <springProfile name="dev,dev01,dev02,test,test01,test02,prod,prod01,prod02">
+
+        <!-- DEBUG级别以上日志以JSON存放到文件中 -->
+        <appender name="debug" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${logPath}/${springAppName}_debug.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- 日志文件输出的文件名 -->
+                <fileNamePattern>${logPath}/${springAppName}_debug_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+                <!-- 日志文件保留天数 -->
+                <MaxHistory>20</MaxHistory>
+                <!-- 应用启动时清理超期的日志文件与MaxHistory配合使用 -->
+                <cleanHistoryOnStart>true</cleanHistoryOnStart>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <!-- 输出DEBUG以上级别的日志 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>debug</level>
+            </filter>
+            <!-- 日志输出到文件格式-->
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread][user:%X{user}][%-5level] %logger{36}-%msg[Trace:%X{X-B3-TraceId:-}][Span:%X{X-B3-SpanId:-}][Parent:%X{X-B3-ParentSpanId:-}]%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- WARN级别以上日志以JSON存放到文件中 -->
+        <appender name="warn" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${logPath}/${springAppName}_warn.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- 日志文件输出的文件名 -->
+                <fileNamePattern>${logPath}/${springAppName}_warn_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+                <!-- 日志文件保留天数 -->
+                <MaxHistory>20</MaxHistory>
+                <!-- 应用启动时清理超期的日志文件与MaxHistory配合使用 -->
+                <cleanHistoryOnStart>true</cleanHistoryOnStart>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <!-- 输出WARN以上级别的日志 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>warn</level>
+            </filter>
+            <!-- 日志输出到文件格式-->
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread][user:%X{user}][%-5level] %logger{36}-%msg [Trace:%X{X-B3-TraceId:-}][Span:%X{X-B3-SpanId:-}][Parent:%X{X-B3-ParentSpanId:-}]%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- ERROR级别以上日志以JSON存放到文件中 -->
+        <appender name="error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${logPath}/${springAppName}_error.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <!-- 日志文件输出的文件名 -->
+                <fileNamePattern>${logPath}/${springAppName}_error_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+                <!-- 日志文件保留天数 -->
+                <MaxHistory>20</MaxHistory>
+                <!-- 应用启动时清理超期的日志文件与MaxHistory配合使用 -->
+                <cleanHistoryOnStart>true</cleanHistoryOnStart>
+                <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                    <maxFileSize>100MB</maxFileSize>
+                </timeBasedFileNamingAndTriggeringPolicy>
+            </rollingPolicy>
+            <!-- 输出ERROR以上级别的日志 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>error</level>
+            </filter>
+            <!-- 日志输出到文件格式-->
+            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread][user:%X{user}][%-5level] %logger{36}-%msg [Trace:%X{X-B3-TraceId:-}][Span:%X{X-B3-SpanId:-}][Parent:%X{X-B3-ParentSpanId:-}]%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+        </appender>
+
+        <!-- 根据spring.profiles.active环境变量,测试环境输出debug级别日志 -->
+        <springProfile name="dev,dev01,dev02,test,test01,test02,prod,prod01,prod02">
+            <root level="debug">
+                <appender-ref ref="debug"/>
+                <appender-ref ref="warn"/>
+                <appender-ref ref="error"/>
+            </root>
+        </springProfile>
+
+        <!-- 根据spring.profiles.active环境变量,生产环境输出info级别日志 -->
+        <springProfile name="prod">
+            <root level="info">
+                <appender-ref ref="debug"/>
+                <appender-ref ref="warn"/>
+                <appender-ref ref="error"/>
+            </root>
+        </springProfile>
+    </springProfile>
+
+    <!-- 根据spring.profiles.active环境变量,开发环境输出到控制台 -->
+    <springProfile name="dev,dev01,dev02,test,test01,test02,prod,prod01,prod02">
+
+        <!-- 控制台标准日志输出 -->
+        <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+            <!-- 控制台输出日志的格式 -->
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread][user:%X{user}][%-5level] %logger{36}-%msg [Trace:%X{X-B3-TraceId:-}][Span:%X{X-B3-SpanId:-}][Parent:%X{X-B3-ParentSpanId:-}]%n</pattern>
+                <charset>UTF-8</charset>
+            </encoder>
+            <!-- 只是INFO级别以上日志才显示 -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>trace</level>
+            </filter>
+        </appender>
+        <root level="debug">
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+</configuration>
