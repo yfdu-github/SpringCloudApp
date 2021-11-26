@@ -15,6 +15,10 @@
     <modules>
         <module>eureka</module>
         <module>constant</module>
+        <module>database</module>
+        <module>database-cs</module>
+        <module>database-server</module>
+        <module>publicutils</module>
     </modules>
 
     <!-- 父项目的坐标坐标 -->
@@ -34,11 +38,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-                <version>2.4.3</version>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
