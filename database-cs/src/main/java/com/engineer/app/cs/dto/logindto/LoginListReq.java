@@ -1,12 +1,9 @@
 package com.engineer.app.cs.dto.logindto;
 
 import com.sun.org.glassfish.gmbal.Description;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
-
 import javax.validation.constraints.NotEmpty;
 
 /**
@@ -33,4 +30,9 @@ public class LoginListReq {
 
     @Description("排序数组")
     private String[] orderBy;
+
+    @Description("查询流水号")
+    @NotEmpty
+    @Length(max = 20)
+    private String serialNo;
 }

@@ -1,11 +1,9 @@
 package com.engineer.app.cs.dto.logindto;
 
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import com.sun.org.glassfish.gmbal.Description;
 import javax.validation.constraints.NotEmpty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * @author 杜宇飞
@@ -28,4 +26,8 @@ public class LoginReq {
     @Description("用户名")
     @Length(max = 20)
     private String customerId;
+
+    public LoginReq() {
+        super();
+    }
 }

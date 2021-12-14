@@ -1,0 +1,55 @@
+#SpringCloud配置中心
+spring:
+  application:
+    servername: DATABASE-SERVER
+    servername-Lower: database-server
+    name: ${spring.application.servername}
+  #数据库连接地址
+  datasource:
+    type: com.mysql.cj.jdbc.MysqlConnectionPoolDataSource
+    url: jdbc:mysql://localhost:3306/weekReporter?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123568
+    dbcp2:
+      pool-prepared-statements: true #Statement缓存
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 30000
+      validation-query: select 1 from dual
+      default-auto-commit: false
+      test-on-borrow: true
+      test-while-idle: true
+      test-on-return: false
+      max-wait-millis: 10000
+      initial-size: 1
+      max-total: 30
+      max-idle: 30
+      min-idle: 1
+#  cloud:
+#    config:
+#      name: public, database
+#      enable: true
+#      discovery:
+#        enabled: true
+#        service: config-server
+#      fail-fast: true
+#      profile: dev
+#      publicprofile: dev
+#      label: develop
+
+server:
+  port: 2000
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:9230/eureka
+
+  instance:
+    appname: ${spring.application.name} 数据中台服务
+    prefer-ip-address: true # 点击eureka界面上超链接会用ip方式打开
+    instance-id: ${spring.cloud.client.ip-address}:${server.port} # 注册中心上显示的名称
+    status-page-url-path: /actuator/info # 在注册中心点击跳转的地址
+    health-check-url-path: /actuator/heatlth # 健康检查地址
+    lease-renewal-interval-in-seconds: 15 # 该实例向注册中心发送心跳时间间隔
+    lease-expiration-duration-in-seconds: 15 # 指示注册中心未收到本实例心跳的间隔时间

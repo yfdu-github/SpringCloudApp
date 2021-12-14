@@ -1,12 +1,10 @@
 package com.engineer.app.cs.dto.logindto;
 
 import com.sun.org.glassfish.gmbal.Description;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
-
 import javax.validation.constraints.NotEmpty;
+import java.time.LocalDateTime;
 
 /**
  * @author 杜宇飞
@@ -45,4 +43,24 @@ public class LoginRsp {
     @Description("电脑IP地址")
     @Length(max = 20)
     private String internetAddress;
+
+    @Description("登记人")
+    @Length(max = 20)
+    private String inputUserId;
+
+    @Description("登记时间")
+    @Length(max = 20)
+    private LocalDateTime inputTime;
+
+    @Description("更新人")
+    @Length(max = 20)
+    private String updateUserId;
+
+    @Description("更新时间")
+    @Length(max = 20)
+    private LocalDateTime updateTime;
+
+    public LoginRsp() {
+        super();
+    }
 }

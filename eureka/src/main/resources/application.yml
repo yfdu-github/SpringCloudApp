@@ -18,6 +18,7 @@ server:
 eureka:
   instance:
     hostname: localhost
+    appname: ${spring.application.name} 注册中心服务
     prefer-ip-address: true # 点击eureka界面上超链接会用ip方式打开
     instance-id: ${spring.cloud.client.ip-address}:${server.port} # 注册中心上显示的名称
     status-page-url-path: /actuator/info # 在注册中心点击跳转的地址

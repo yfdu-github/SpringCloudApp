@@ -1,0 +1,43 @@
+#选择对应的配置文件连接库
+spring:
+  jmx:
+    enabled: false
+  profiles:
+    active: dev01
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+
+#连接服务端口
+server:
+  port: 2000
+  servlet:
+    context-path: /database-server
+
+#日志控制台输出
+logging:
+  file:
+    path: /tmp/logs
+  config: classpath:logback-spring.xml
+  level:
+    org.springframework: warn
+    org.apache: warn
+    com.netflix: warn
+    org.hibernate: warn
+    io.netty: warn
+
+# 健康检查信息
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,env,metrics,heapdump,threaddump,beans
+
+# Eureka注册服务之后点击服务连接显示的信息
+info:
+  app.name: ${spring.application.name}
+  company.name: www.weekReporter.com
+  build.artifactId: "@project.actifactId@"
+  build.version: "@project.version@"
+
